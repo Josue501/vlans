@@ -1,0 +1,69 @@
+# Configuração do Switch 1
+enable
+configure terminal
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+interface range fastethernet0/1-12
+switchport mode access
+switchport access vlan 10
+interface range fastethernet0/13-24
+switchport mode access
+switchport access vlan 20
+interface gigabitethernet0/1
+switchport mode trunk
+exit
+copy running-config startup-config
+
+# Configuração do Switch 2
+enable
+configure terminal
+vlan 10
+name VLAN10
+vlan 20
+name VLAN20
+interface range fastethernet0/1-12
+switchport mode access
+switchport access vlan 10
+interface range fastethernet0/13-24
+switchport mode access
+switchport access vlan 20
+interface gigabitethernet0/1
+switchport mode trunk
+exit
+copy running-config startup-config
+
+enable
+configure terminal
+interface gigabitethernet0/0
+description Conexão com Switch 1
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+exit
+
+interface gigabitethernet0/1
+description Conexão com Switch 2
+ip address 192.168.20.1 255.255.255.0
+no shutdown
+exit
+
+ip routing
+exit
+copy running-config startup-config
+
+enable
+configure terminal
+ip dhcp pool VLAN10
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+dns-server 8.8.8.8
+exit
+
+ip dhcp pool VLAN20
+network 192.168.20.0 255.255.255.0
+default-router 192.168.20.1
+dns-server 8.8.8.8
+exit
+
+# Excluir DHCP estático
